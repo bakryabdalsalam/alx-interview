@@ -1,27 +1,35 @@
 #!/usr/bin/python3
-"""Minimum Operations"""
-
-
-def primeFactorization(x):
-    """Returns prime factorization elements of x"""
-    div = 2
-    array = list()
-    while (div <= x):
-        if x % div == 0:
-            array.append(div)
-            x /= div
-        else:
-            div += 1
-
-    return array
+'''The minimum operations coding challenge.
+'''
 
 
 def minOperations(n):
-    """Calculates the fewest number of operations needed
-        to result in exactly n H characters in the file"""
-    min = 0
-    factors = [x for x in primeFactorization(n)]
-    occurences = {item: factors.count(item) for item in factors}
-    for k, v in occurences.items():
-        min += k * v
-    return min
+    '''Computes the fewest number of operations needed to result
+    in exactly n H characters.
+    '''
+    if not isinstance(n, int):
+        return 0
+    ops_count = 0
+    clipboard = 0
+    done = 1
+    # print('H', end='')
+    while done < n:
+        if clipboard == 0:
+            # init (the first copy all and paste)
+            clipboard = done
+            done += clipboard
+            ops_count += 2
+            # print('-(11)->{}'.format('H' * done), end='')
+        elif n - done > 0 and (n - done) % done == 0:
+            # copy all and paste
+            clipboard = done
+            done += clipboard
+            ops_count += 2
+            # print('-(11)->{}'.format('H' * done), end='')
+        elif clipboard > 0:
+            # paste
+            done += clipboard
+            ops_count += 1
+            # print('-(01)->{}'.format('H' * done), end='')
+    # print('')
+    return ops_count
