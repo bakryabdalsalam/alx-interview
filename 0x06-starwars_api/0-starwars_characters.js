@@ -1,24 +1,17 @@
 #!/usr/bin/node
-const request = require('request-promise');
 
-const printCharactersInOrder = async (characters, index = 0) => {
-  if (index >= characters.length) return;
+const request = require('request');
 
-  try {
-    const body = await request(characters[index]);
+request('https://swapi-api.hbtn.io/api/films/' + process.argv[2], function (err, response, body) {
+  if (err) throw err;
+  const actors = JSON.parse(body).characters; 
+  exact0rder(actors, 0);
+});
+const exact0rder = (actors, x) => {
+  if (x === actors.length) return;
+  request(actors[x], function (err, response, body) {
+    if (err) throw err;
     console.log(JSON.parse(body).name);
-    await printCharactersInOrder(characters, index + 1);
-  } catch (error) {
-    console.error('An error occurred:', error);
-  }
+    exact0rder(actors, x + 1);
+  });
 };
-
-const movieId = process.argv[2];
-const apiUrl = `https://swapi.dev/api/films/${movieId}`;
-
-request(apiUrl)
-  .then(body => {
-    const characters = JSON.parse(body).characters;
-    printCharactersInOrder(characters);
-  })
-  .catch(error => console.error('An error occurred:', error));
